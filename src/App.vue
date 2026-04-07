@@ -18,6 +18,7 @@ function addTarefa () {
     desc: novaTarefa.value, status: 'pendente'
   });
   }
+
   else {
     tarefas.value[posicaoAlterar.value].desc = novaTarefa.value
     posicaoAlterar.value = -1;
@@ -31,29 +32,51 @@ function deleteTarefa (item) {
   const posicao = tarefas.value.findIndex(t => t.id === item.id);
   tarefas.value.splice(posicao, 1);
 }
+
 function editTarefa (item) {
   posicaoAlterar.value = tarefas.value.findIndex(t => t.id === item.id);
   novaTarefa.value = tarefas.value[posicaoAlterar.value].desc;
 }
+
+function marcarConcluida (id) {
+  const posicao = tarefas.value.findIndex(t => t.id == id)
+  if (tarefas.value[posicao].status === 'concluida') {
+    tarefas.value[posicao].status = 'pendente'
+  }
+  else if (tarefas.value[posicao].status == "pendente"){
+    tarefas.value[posicao].status = 'concluida'
+  }
+  }
+
 </script>
 
 <template>
   <div class="container">
     <input type="text" v-model="novaTarefa" @keyup.enter="addTarefa">
     <button @click="addTarefa">Adicionar</button>
+    
     <ul>
       <li v-for="item in tarefas" :key="item.id">
+      
+      <span @click="marcarConcluida(item.id)" 
+      :class="{ concluida: item.status == 'concluida'}"
+      >
         {{ item.desc }}
-        <span>
+      </span>
+        <span >
         <a href="#" @click.prevent="deleteTarefa(item)">Deletar</a>
         <a href="#" @click.prevent="editTarefa(item)">Editar</a>
       </span>
-
       </li>
     </ul>
   </div>
 </template>
 
 <style scoped>
-
+  li{
+    cursor: pointer;
+  }
+  .concluida{
+    text-decoration: line-through;
+  }
 </style>
